@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			"use strict";
+			//1.原生的ajax把数据取回来
+			//2.dom操作
+
+			//定义一个获取xhr对象的函数
+			function createXHR() {
+				var xhr;
+				try {
+					xhr = new XMLHttpRequest();
+				} catch (e) {
+					xhr = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				return xhr;
+			}
+
+			var xhr = createXHR();
+			//ajax操作
+			//1.调用xhr的open方法
+			xhr.open("get", "data/1.json");
+			xhr.send(null);
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4) {
+					if (xhr.status == 200) {
+						listShop(xhr.responseText);
+					}
+				}
+			}
+
+			function listShop(str) {
+				var obj = JSON.parse(str);
+				if (obj.errno == 0) {
+					//console.log(obj.shop_data.length);
+					var rootElem = document.getElementById("saleProducts");
+
+					for (var i = 0; i < obj.shop_data.length; i++) {
+						var dlElem = document.createElement("dl");
+						var dtElem = document.createElement("dt");
+						var shop_ico_img = document.createElement("img");
+						shop_ico_img.setAttribute("src", obj.shop_data[i].shop_ico);
+						dlElem.appendChild(dtElem);
+						dtElem.appendChild(shop_ico_img);
+						//把其他的内容添加到dom树上。
+						rootElem.appendChild(dlElem);
+					}
+				} else {
+					alert(obj.errmsg);
+				}
+			}
+		</script>
+	</body>
+
+</html>
